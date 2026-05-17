@@ -156,6 +156,62 @@ if [ "$HTTPS_BAD" -gt 0 ]; then
 fi
 echo "" >> "$REPORT"
 
+# Affiliate link presence check — flag sites with ZERO amazon links
+echo "── Missing Affiliate Links ──" >> "$REPORT"
+NO_LINKS=0
+NO_LINKS_LIST=""
+for site_dir in "$SITES_DIR"/*/; do
+  [ -d "$site_dir" ] || continue
+  site=$(basename "$site_dir")
+  # Skip known non-affiliate sites
+  echo "$site" | grep -qE "skipatip|thedailycheer|combinedratings|axl-dashboard" && continue
+  count=$(grep -roh "amazon.com" "$site_dir"/*.html 2>/dev/null | wc -l)
+  if [ "$count" -eq 0 ]; then
+    NO_LINKS=$((NO_LINKS + 1))
+    NO_LINKS_LIST="${NO_LINKS_LIST}$site\n"
+  fi
+done
+if [ "$NO_LINKS" -gt 0 ]; then
+  echo "  ⚠️ $NO_LINKS sites have ZERO Amazon affiliate links:" >> "$REPORT"
+  echo -e "  $NO_LINKS_LIST" >> "$REPORT"
+else
+  echo "  ✅ All sites have affiliate links" >> "$REPORT"
+fi
+echo "" >> "$REPORT"
+
+# Blog post freshness check — verify posts are being published
+echo "── Blog Post Freshness Check ──" >> "$REPORT"
+BLOG_FRESH=0
+BLOG_STALE=0
+BLOG_STALE_LIST=""
+ROTATION_FILE="$ROOT/memory/blog-rotation-batch.json"
+if [ -f "$ROTATION_FILE" ]; then
+  YESTERDAY=$(date -u -d "yesterday" "+%Y-%m-%d")
+  STALE_SITES=$(python3 -c "
+import json,sys
+with open('$ROTATION_FILE') as f:
+    data = json.load(f)
+for site, dt in data.items():
+    if dt < '$YESTERDAY':
+        print(site)
+" 2>/dev/null | head -20)
+  BLOG_FRESH=$(python3 -c "
+import json
+with open('$ROTATION_FILE') as f:
+    data = json.load(f)
+print(sum(1 for d in data.values() if d >= '$YESTERDAY'))
+" 2>/dev/null || echo 0)
+  BLOG_STALE=$(echo "$STALE_SITES" | grep -c . || echo 0)
+  echo "  Fresh (posted in last 24h): $BLOG_FRESH" >> "$REPORT"
+  echo "  Stale (no post in 24h+): $BLOG_STALE" >> "$REPORT"
+  if [ "$BLOG_STALE" -gt 50 ]; then
+    echo "  ⚠️ ALERT: Blog generator may be broken — $BLOG_STALE sites stale" >> "$REPORT"
+  fi
+else
+  echo "  ⚠️ No rotation file found — blog generator may not be running" >> "$REPORT"
+fi
+echo "" >> "$REPORT"
+
 # Live site spot check (sample 20 random sites)
 echo "── Live Site Spot Check (20 random) ──" >> "$REPORT"
 SAMPLE_SITES=$(find "$SITES_DIR" -maxdepth 2 -name "index.html" -exec grep -l "amazon.com" {} \; 2>/dev/null | xargs -I{} dirname {} | xargs -I{} basename {} | shuf | head -20)
