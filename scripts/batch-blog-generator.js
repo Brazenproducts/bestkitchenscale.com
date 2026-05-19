@@ -223,7 +223,11 @@ function extractProducts(siteDir) {
       // Fallback 1: extract from Amazon search query parameter
       const kMatch = m[1].match(/[?&]k=([^&]+)/);
       if (kMatch) {
-        name = decodeURIComponent(kMatch[1].replace(/\+/g, ' ')).substring(0, 80);
+        try {
+          name = decodeURIComponent(kMatch[1].replace(/\+/g, ' ')).substring(0, 80);
+        } catch (_) {
+          name = kMatch[1].replace(/\+/g, ' ').replace(/%[0-9a-f]*/gi, '').substring(0, 80);
+        }
       }
       // Fallback 2: find nearest <h3> before this link (within 500 chars)
       if (!name) {

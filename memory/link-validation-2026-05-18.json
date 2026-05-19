@@ -1,0 +1,19 @@
+{
+  "date": "2026-05-18",
+  "totalSites": 414,
+  "sitesWithLinks": 370,
+  "totalLinks": 9431,
+  "productLinks": 423,
+  "searchLinks": 8892,
+  "invalidTags": 0,
+  "missingTags": 0,
+  "missingDisclosure": 0,
+  "linkHealth": {
+    "checked": 50,
+    "alive": 48,
+    "dead": 2,
+    "unavailable": 0,
+    "timeout": 0,
+    "pct": 96
+  }
+}

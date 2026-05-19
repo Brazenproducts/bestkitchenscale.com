@@ -70,8 +70,40 @@ footer a{color:#888}
 def slug(text):
     return re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
 
+# OUR BRANDS - Must link to OUR websites, NOT Amazon
+OUR_BRANDS = {
+    'bartact': ('https://bartact.com', 'Shop Bartact.com →'),
+    'brazen': ('https://brazenproducts.com', 'Shop Brazen →'),
+    'walkway': ('https://walkwaygear.com', 'Shop Walkway Gear →'),
+    'bullstrap': ('https://bullstrap.com', 'Shop Bullstrap →'),
+    'bowtie': ('https://bowtiefilters.com', 'Shop BowTie Filters →'),
+    'blox': ('https://bloxfilters.com', 'Shop Blox Filters →'),
+    'factor': ('https://factorfilters.com', 'Shop Factor Filters →'),
+}
+
+def product_link(product_name, asin=None):
+    """Return link + button text for a product.
+    OUR brands → direct to our site.
+    Competitor brands → Amazon with affiliate tag."""
+    name_lower = product_name.lower()
+    
+    # Check if this is one of OUR brands
+    for brand, (url, btn_text) in OUR_BRANDS.items():
+        if brand in name_lower:
+            return url, btn_text
+    
+    # Competitor brand → Amazon
+    if asin and re.match(r'^[A-Z0-9]{10}$', asin):
+        link = f"https://www.amazon.com/dp/{asin}?tag={AMAZON_TAG}"
+    else:
+        q = product_name.replace(' ', '+')
+        link = f"https://www.amazon.com/s?k={q}&tag={AMAZON_TAG}"
+    
+    return link, "Check Price on Amazon →"
+
 def amazon_link(query, asin=None):
-    """Return a direct /dp/ASIN link if we have one, else search link.
+    """Legacy function - use product_link() instead.
+    Return a direct /dp/ASIN link if we have one, else search link.
     ASINs should be pre-looked-up via SP-API before calling this."""
     if asin and re.match(r'^[A-Z0-9]{10}$', asin):
         return f"https://www.amazon.com/dp/{asin}?tag={AMAZON_TAG}"
@@ -239,7 +271,11 @@ def build_site(domain, topic, products_str, commission, category, outdir):
       <a class="btn" href="{link}" target="_blank" rel="nofollow">{btn_text}</a>
     </div>'''
 
-    product_cards = '\n'.join([build_card(i, p, amazon_link(p)) for i, p in enumerate(products[:5])])
+    def build_card_with_link(i, p, badge_override=None):
+        link, btn_text = product_link(p)  # Get correct link based on brand
+        return build_card(i, p, link, btn_text, badge_override)
+    
+    product_cards = '\n'.join([build_card_with_link(i, p) for i, p in enumerate(products[:5])])
     
     faq_block = faq_schema(faqs)
     faq_visible = faq_html(faqs)

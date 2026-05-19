@@ -1,0 +1,40 @@
+[
+  {
+    "site": "bestfirestick.com",
+    "path": "/home/ubuntu/.openclaw/workspace/tmp/bestfirestick.com",
+    "indexPath": "/home/ubuntu/.openclaw/workspace/tmp/bestfirestick.com/index.html",
+    "products": [
+      {
+        "url": "https://www.amazon.com/dp/B0BP9SNVH9?tag=brazenprodu01-20",
+        "asin": "B0BP9SNVH9"
+      },
+      {
+        "url": "https://www.amazon.com/dp/B091G4YP57?tag=brazenprodu01-20",
+        "asin": "B091G4YP57"
+      },
+      {
+        "url": "https://www.amazon.com/dp/B09BZZ3MM7?tag=brazenprodu01-20",
+        "asin": "B09BZZ3MM7"
+      },
+      {
+        "url": "https://www.amazon.com/dp/B0B9HS8DLM?tag=brazenprodu01-20",
+        "asin": "B0B9HS8DLM"
+      },
+      {
+        "url": "https://www.amazon.com/dp/B0BTHY3N2Y?tag=brazenprodu01-20",
+        "asin": "B0BTHY3N2Y"
+      }
+    ]
+  },
+  {
+    "site": "bestinstantpot.com",
+    "path": "/home/ubuntu/.openclaw/workspace/tmp/bestinstantpot.com",
+    "indexPath": "/home/ubuntu/.openclaw/workspace/tmp/bestinstantpot.com/index.html",
+    "products": [
+      {
+        "url": "https://www.amazon.com/dp/B07S85TPLG?tag=brazenprodu01-20",
+        "asin": "B07S85TPLG"
+      }
+    ]
+  }
+]

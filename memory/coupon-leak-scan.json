@@ -1,244 +1,51 @@
 {
-  "scanDate": "2026-05-11T22:00:00Z",
-  "scanNote": "Weekly cron scan — browser-verified results",
-  "sitesChecked": [
+  "date": "2026-05-18T22:00:00Z",
+  "sites_checked": [
+    "retailmenot.com",
+    "wethrift.com",
+    "honey.com",
+    "knoji.com",
+    "couponfollow.com",
+    "hotdeals.com",
+    "dealspotr.com",
+    "startupworld.com",
+    "joincheckmate.com",
+    "strimoo.com",
+    "wadav.com",
+    "clothingric.com",
+    "greenpromocode.com"
+  ],
+  "codes_found": [
     {
-      "site": "RetailMeNot",
-      "url": "https://www.retailmenot.com/view/bartact.com",
-      "hasPage": false,
-      "codesFound": [],
-      "notes": "404 — No Bartact page exists on RetailMeNot (confirmed via browser)"
+      "code": "LAURIE",
+      "source": "hotdeals.com",
+      "claimed_discount": "up to 50% OFF",
+      "notes": "Listed as verified discount code for Vehicle Seat Covers, Grab Handles, etc."
     },
     {
-      "site": "Honey (PayPal)",
-      "url": "https://www.joinhoney.com/shop/bartact",
-      "hasPage": true,
-      "codesFound": [],
-      "notes": "Page exists but shows 'We didn't find any current deals.' No codes listed. Honey auto-applies at checkout but has nothing for Bartact right now."
+      "code": "BF200",
+      "source": "wadav.com",
+      "claimed_discount": "up to 20% off",
+      "notes": "Listed among most redeemed promo codes"
     },
     {
-      "site": "WeThrift",
-      "url": "https://www.wethrift.com/bartact",
-      "hasPage": false,
-      "codesFound": [],
-      "notes": "404 — No Bartact page exists on WeThrift (confirmed via browser)"
+      "code": "FREESHIP2",
+      "source": "wadav.com",
+      "claimed_discount": "free shipping",
+      "notes": "Listed among most redeemed promo codes"
     },
     {
-      "site": "Knoji",
-      "url": "https://bartact.knoji.com/promo-codes/",
-      "hasPage": true,
-      "codesFound": ["SAVE5", "WELCOME5", "WRANGLIATOR10", "MULANA", "LAURIE"],
-      "verifiedCodes": ["MULANA", "LAURIE"],
-      "unverifiedCodes": ["SAVE5", "WELCOME5", "WRANGLIATOR10"],
-      "notes": "Active page with full code history. SAVE5 and WELCOME5 listed as unverified (Knoji marks them 'Likely to Work Today: No'). MULANA and LAURIE listed as verified/active. WRANGLIATOR10 and NSB6784 in historical table. Codes last verified May 11, 2026."
-    },
-    {
-      "site": "CouponFollow",
-      "url": "https://couponfollow.com/site/bartact.com",
-      "hasPage": false,
-      "codesFound": [],
-      "notes": "404 — No Bartact page exists on CouponFollow (confirmed via browser)"
-    },
-    {
-      "site": "Dealspotr",
-      "url": "https://dealspotr.com/promo-codes/bartact.com",
-      "hasPage": true,
-      "codesFound": [],
-      "notes": "Page exists with 2 verified codes (hidden behind 'Show Discount Code' button — codes not revealed in snapshot). Shows 5% off sitewide codes. Codes last verified May 11, 2026. No specific code text visible without clicking reveal."
-    },
-    {
-      "site": "GoodShop",
-      "url": "https://www.goodshop.com/coupons/bartact",
-      "hasPage": false,
-      "codesFound": [],
-      "notes": "404 — No Bartact page exists on GoodShop (confirmed via browser)"
-    },
-    {
-      "site": "CouponCabin",
-      "url": "https://www.couponcabin.com/coupons/bartact/",
-      "hasPage": false,
-      "codesFound": [],
-      "notes": "404 — No Bartact page exists on CouponCabin (confirmed via browser)"
-    },
-    {
-      "site": "Offers.com",
-      "url": "https://www.offers.com/bartact/",
-      "hasPage": false,
-      "codesFound": [],
-      "notes": "404 — No Bartact page exists on Offers.com (confirmed via browser)"
-    },
-    {
-      "site": "SimplyCodes",
-      "url": "https://www.simplycodes.com/store/bartact",
-      "hasPage": false,
-      "codesFound": [],
-      "notes": "404 — No Bartact page exists on SimplyCodes (confirmed via browser)"
-    },
-    {
-      "site": "HotDeals",
-      "url": "https://www.hotdeals.com/coupons/bartact-promo-codes",
-      "hasPage": true,
-      "codesFound": ["LAURIE", "MULANA", "JLYNNE", "FLASH30", "WELCOME5", "JORDANLYNNE_", "WELCOME", "NSBRONCO", "EXTRA15", "TAKE15", "SUMMER15", "SAVE5", "LOVE", "MOM20", "15OFF", "SUMMER30", "WELCOME10", "POWER15"],
-      "verifiedCodes": ["LAURIE", "MULANA", "JLYNNE"],
-      "notes": "Most comprehensive listing found. 21 active codes listed. SAVE5 and WELCOME5 both explicitly shown. LAURIE and JLYNNE verified with screenshots (tested 1-2 days ago). FLASH30 (30% off) newly added 2 days ago. WELCOME10 (10% first order), SUMMER30 (30% off), MOM20 (20% off) also listed. Expired section includes TEAMMEMBER10, LAURIE15, CHECK20, 10BLUEXT, DLCHECK5BP."
+      "code": "MOM15",
+      "source": "wadav.com",
+      "claimed_discount": "up to 20% off",
+      "notes": "Listed among most redeemed promo codes"
     }
   ],
-  "searchResults": [
-    {
-      "query": "bartact promo code discount 2026",
-      "topResults": [
-        "hotdeals.com — MULANA code featured prominently",
-        "dealspotr.com — 5% off codes, $200 off claimed",
-        "knoji.com — 4 active codes, 20% off claimed",
-        "bartact.startupworld.com — 13 coupons claimed",
-        "strimoo.com — 12 coupons, 15-60% off claimed",
-        "joincheckmate.com — 25 codes, 50% off claimed",
-        "wadav.com — Bartact coupons page",
-        "clothingric.com — Bartact coupons page"
-      ]
-    },
-    {
-      "query": "bartact coupon code 2026",
-      "topResults": [
-        "hotdeals.com — MULANA featured, 21 codes",
-        "dealspotr.com — 7 verified codes claimed",
-        "knoji.com — 4 active codes",
-        "bartact.startupworld.com — 13 coupons",
-        "joincheckmate.com — 25 codes",
-        "strimoo.com — 12 coupons",
-        "clothingric.com — 6 valid coupons claimed"
-      ]
-    }
-  ],
-  "allCodesFound": {
-    "SAVE5": {
-      "foundOn": ["HotDeals", "Knoji"],
-      "status": "KNOWN WATCH CODE",
-      "knoji_status": "Unverified, 'Likely to Work Today: No' — first issued Feb 9 2026",
-      "hotdeals_status": "Listed as active, 10 uses, avg saved $37.99",
-      "risk": "MEDIUM — Code is publicly listed and being tried by shoppers. Knoji says it likely doesn't work, but HotDeals claims 10 uses. Recommend verifying in Shopify whether this code is still active."
-    },
-    "WELCOME5": {
-      "foundOn": ["HotDeals", "Knoji"],
-      "status": "KNOWN WATCH CODE",
-      "knoji_status": "Unverified, 'Likely to Work Today: No' — first issued Jan 2 2026",
-      "hotdeals_status": "Listed as active, labeled '10% off Store-Wide' (mislabeled by site)",
-      "risk": "MEDIUM — Same as SAVE5. Publicly listed and being tried. Knoji says likely expired. Verify in Shopify."
-    },
-    "MULANA": {
-      "foundOn": ["HotDeals", "Knoji"],
-      "status": "AUTHORIZED INFLUENCER CODE",
-      "knoji_status": "Verified, 'Likely to Work Today: Yes' — first issued Mar 1 2026",
-      "hotdeals_status": "Verified with screenshot, 6 uses, 5% off",
-      "risk": "LOW — Intentional affiliate/influencer code for @mulanaandme. This is authorized."
-    },
-    "LAURIE": {
-      "foundOn": ["HotDeals", "Knoji"],
-      "status": "POSSIBLE INFLUENCER/AFFILIATE CODE",
-      "knoji_status": "Verified, 'Likely to Work Today: Yes' — first issued Mar 1 2026",
-      "hotdeals_status": "Verified with screenshot, 6 uses, 5% off, expires May 24 2026",
-      "risk": "LOW-MEDIUM — Appears to be a real working code. Likely an influencer/affiliate code (similar to MULANA). Verify with Mitch whether LAURIE is an authorized affiliate."
-    },
-    "JLYNNE": {
-      "foundOn": ["HotDeals"],
-      "status": "POSSIBLE INFLUENCER/AFFILIATE CODE",
-      "hotdeals_status": "Verified with screenshot, 5 uses, 5% off, expires May 24 2026",
-      "risk": "LOW-MEDIUM — Real working code. Likely influencer code. Verify with Mitch whether JLYNNE is an authorized affiliate."
-    },
-    "JORDANLYNNE_": {
-      "foundOn": ["HotDeals"],
-      "status": "POSSIBLE INFLUENCER CODE",
-      "hotdeals_status": "Up to 10% off, expires May 13 2026",
-      "risk": "LOW-MEDIUM — Likely influencer code for someone named Jordan Lynne."
-    },
-    "FLASH30": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN — POTENTIALLY LEAKED",
-      "hotdeals_status": "30% off, newly added 2 days ago (May 9), 1 use",
-      "risk": "HIGH — 30% off is a significant discount. Newly added suggests recent leak. Verify in Shopify immediately."
-    },
-    "WELCOME10": {
-      "foundOn": ["HotDeals"],
-      "status": "POSSIBLE FIRST-ORDER CODE — POTENTIALLY LEAKED",
-      "hotdeals_status": "First order 10% off, expires May 13 2026",
-      "risk": "MEDIUM — First-order welcome code. If this is a real Shopify code, it may be leaking."
-    },
-    "SUMMER30": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN — POTENTIALLY LEAKED",
-      "hotdeals_status": "30% off, 6 uses",
-      "risk": "HIGH — 30% off seasonal code. Verify in Shopify."
-    },
-    "MOM20": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN — POTENTIALLY LEAKED",
-      "hotdeals_status": "20% off, Mother's Day code",
-      "risk": "MEDIUM-HIGH — 20% off Mother's Day code. Verify in Shopify."
-    },
-    "POWER15": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN",
-      "hotdeals_status": "15% off",
-      "risk": "MEDIUM — Verify in Shopify."
-    },
-    "EXTRA15": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN",
-      "hotdeals_status": "15% off, 3 uses",
-      "risk": "MEDIUM — Verify in Shopify."
-    },
-    "TAKE15": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN",
-      "hotdeals_status": "15% off, 10 uses",
-      "risk": "MEDIUM — Verify in Shopify."
-    },
-    "SUMMER15": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN",
-      "hotdeals_status": "15% off, 8 uses",
-      "risk": "MEDIUM — Verify in Shopify."
-    },
-    "15OFF": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN",
-      "hotdeals_status": "15% off",
-      "risk": "MEDIUM — Verify in Shopify."
-    },
-    "NSBRONCO": {
-      "foundOn": ["HotDeals"],
-      "status": "POSSIBLE INFLUENCER/AFFILIATE CODE",
-      "hotdeals_status": "10% off, 12 uses",
-      "risk": "LOW-MEDIUM — Likely a Bronco community/influencer code."
-    },
-    "WELCOME": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN",
-      "hotdeals_status": "Deal code, 4 uses",
-      "risk": "LOW — Generic welcome code, likely expired or non-functional."
-    },
-    "LOVE": {
-      "foundOn": ["HotDeals"],
-      "status": "UNKNOWN",
-      "hotdeals_status": "Up to 25% off, 7 uses",
-      "risk": "MEDIUM — Verify in Shopify."
-    },
-    "WRANGLIATOR10": {
-      "foundOn": ["Knoji"],
-      "status": "HISTORICAL — LIKELY EXPIRED",
-      "knoji_status": "Unverified, 'Likely to Work Today: No' — first issued Mar 27 2025",
-      "risk": "LOW — 15 months old, Knoji says likely doesn't work."
-    }
+  "watched_codes_status": {
+    "SAVE5": "not found in any search results",
+    "WELCOME5": "not found in any search results"
   },
-  "criticalFindings": {
-    "SAVE5": "PUBLICLY LISTED on HotDeals and Knoji — verify if still active in Shopify",
-    "WELCOME5": "PUBLICLY LISTED on HotDeals and Knoji — verify if still active in Shopify",
-    "FLASH30": "NEW LEAK — 30% off code added to HotDeals 2 days ago. HIGH PRIORITY.",
-    "SUMMER30": "30% off code publicly listed — HIGH PRIORITY if active in Shopify",
-    "MOM20": "20% off Mother's Day code publicly listed — verify if still active",
-    "LAURIE": "Verified working 5% code — confirm if authorized affiliate",
-    "JLYNNE": "Verified working 5% code — confirm if authorized affiliate"
-  },
-  "alertRequired": true,
-  "recommendation": "ALERT REQUIRED. Multiple codes found this week vs last week's clean scan. Most significant: FLASH30 (30% off) was newly added to HotDeals 2 days ago and SUMMER30 (30% off) has 6 uses. Both SAVE5 and WELCOME5 (the known watch codes) are publicly listed on HotDeals and Knoji — Knoji marks them as likely expired but HotDeals claims active usage. Mitch should log into Shopify and check which of these codes are currently active/enabled, then deactivate any that shouldn't be public. Priority order: FLASH30, SUMMER30, MOM20, SAVE5, WELCOME5, then the 15% codes."
+  "notes": "Multiple coupon aggregator sites list Bartact codes. The codes LAURIE, BF200, FREESHIP2, and MOM15 were explicitly named in search snippets. Many sites claim high numbers of codes (13-25) but don't reveal them in snippets — actual code lists require visiting the pages. Knoji has a dedicated Bartact page with 4 active codes. Watched codes SAVE5 and WELCOME5 were NOT found exposed. No Bartact-specific pages found on retailmenot.com, wethrift.com, honey.com, or couponfollow.com.",
+  "alert_required": true,
+  "alert_reason": "4 codes found publicly listed on coupon sites"
 }

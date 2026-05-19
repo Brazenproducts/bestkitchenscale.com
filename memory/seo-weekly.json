@@ -1,0 +1,25 @@
+{
+  "status": "BLOCKED",
+  "reason": "GCP service account key file missing at /home/ubuntu/.openclaw/workspace/.gcp-service-account.json",
+  "lastAttempt": "2026-05-18T03:12:00Z",
+  "notes": [
+    "File .google-credentials.json also missing",
+    "Org policy iam.disableServiceAccountKeyCreation may have blocked key creation (noted 2026-04-16)",
+    "Last successful GSC pull was 2026-05-04 (seo-audit-weekly.md)",
+    "Bartact GSC property: https://www.bartact.com/ (URL-prefix, not sc-domain)",
+    "Service account: axl-sheets@axl-sheets.iam.gserviceaccount.com (project: axl-sheets)",
+    "Need Mitch to download a new service account key or use workload identity federation"
+  ],
+  "lastKnownData": {
+    "source": "memory/seo-audit-weekly.md",
+    "period": "2026-04-27 to 2026-05-03",
+    "bartact": {
+      "clicksPerDay": 143,
+      "impressionsPerDay": 7991,
+      "ctr": "1.79%",
+      "avgPosition": 9.5,
+      "topMoneyQuery": "best seat covers for jeep gladiator",
+      "topMoneyQueryPosition": 1.5
+    }
+  }
+}
