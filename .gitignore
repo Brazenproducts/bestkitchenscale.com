@@ -1,3 +1,4 @@
 .elevenlabs-key
 .brazenauto-smtp.json
 memory/.dreams/
+node_modules/
