@@ -12,7 +12,14 @@ require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') }
 const https = require('https');
 const fs = require('fs');
 
-const CREDS = JSON.parse(fs.readFileSync('/home/ubuntu/.openclaw/workspace/.google-ads-credentials.json', 'utf8'));
+const CREDS_PATH = '/home/ubuntu/.openclaw/workspace/.google-ads-credentials.json';
+if (!fs.existsSync(CREDS_PATH)) {
+  console.log('AUDIT STATUS: credentials file missing at ' + CREDS_PATH);
+  console.log('ACTION REQUIRED: Restore .google-ads-credentials.json to run this audit.');
+  console.log('Audit skipped — credentials unavailable. No changes made.');
+  process.exit(0);
+}
+const CREDS = JSON.parse(fs.readFileSync(CREDS_PATH, 'utf8'));
 const SHOPIFY_STORE = 'bartact.myshopify.com';
 const SHOPIFY_TOKEN = process.env.SHOPIFY_TOKEN_BARTACT;
 
