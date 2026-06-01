@@ -9,3 +9,4 @@
 - totalPushed stuck at 1650, dailyCount: 199
 - Action required: Mitch must re-auth with info@bullstrap.com Google account
 - Mitch notified via webchat heartbeat alert
+- 2026-06-01: totalPushed=1650, dailyCount=0, lastRun=2026-05-28T12:02:40Z — STALLED 101hrs, re-auth needed
