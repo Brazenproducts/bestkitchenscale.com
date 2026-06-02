@@ -123,6 +123,12 @@ async function main() {
         log(`QUOTA HIT after ${ok} pushes`);
         quotaHit = true;
         break;
+      } else if (status === 403 || status === 404) {
+        // Ghost URL — product no longer exists, mark as pushed so we skip it forever
+        errors++;
+        log(`Ghost URL (${status}) — skipping permanently: ${url}`);
+        state.pushed.push(url); // mark as done so it never retries
+        state.ghostCount = (state.ghostCount || 0) + 1;
       } else {
         errors++;
         log(`Error ${status} on ${url}`);
