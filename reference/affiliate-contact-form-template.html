@@ -42,6 +42,12 @@ button:hover{background:#ffb82b}
   <input type="hidden" name="subject" value="[{{SITE_DOMAIN}}] New contact form submission">
   <input type="hidden" name="from_name" value="{{SITE_NAME}} Contact Form">
   <input type="hidden" name="redirect" value="https://{{SITE_DOMAIN}}/contact.html?sent=1">
+  <input type="hidden" name="site_name" value="{{SITE_NAME}}">
+  <input type="hidden" name="site_domain" value="{{SITE_DOMAIN}}">
+  <input type="hidden" name="site_url" value="https://{{SITE_DOMAIN}}/">
+  <input type="hidden" name="contact_page_url" value="https://{{SITE_DOMAIN}}/contact.html">
+  <input type="hidden" name="page_url" id="page_url" value="">
+  <input type="hidden" name="referrer_url" id="referrer_url" value="">
   <!-- Honeypot -->
   <input type="text" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
   <!-- Context -->
@@ -76,6 +82,10 @@ button:hover{background:#ffb82b}
 <script>
 (function(){
   var q = new URLSearchParams(location.search);
+  var pageUrl = document.getElementById('page_url');
+  var referrerUrl = document.getElementById('referrer_url');
+  if (pageUrl) pageUrl.value = location.href;
+  if (referrerUrl) referrerUrl.value = document.referrer || '';
   if (q.get('sent') === '1') {
     document.getElementById('ok').style.display = 'block';
     document.getElementById('contactForm').reset();

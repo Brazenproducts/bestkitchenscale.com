@@ -8,7 +8,7 @@
  * NEVER suggests pausing campaigns — only budget adjustments
  */
 
-require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
+require('dotenv').config({ path: '/home/ubuntu/.openclaw/workspace/.env' });
 const https = require('https');
 const fs = require('fs');
 

@@ -1,21 +1,22 @@
 #!/usr/bin/env node
 // Deploy contact.html stub to every live affiliate repo + scrub exposed emails.
 // Access key is a placeholder; run update-contact-form-key.js later to swap in real one.
+// Template includes site identity + URL fields so inbound emails clearly show which website generated the lead.
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const ROOT = '/home/ubuntu/.openclaw/workspace';
-const TEMPLATE = fs.readFileSync(path.join(ROOT, 'reference/affiliate-contact-form-template.html'), 'utf8');
+const SITE_ROOT = '/home/ubuntu/.openclaw/workspace/sites/besttirepatch.com';
+const TEMPLATE = fs.readFileSync(path.join(SITE_ROOT, 'reference/affiliate-contact-form-template.html'), 'utf8');
 const PLACEHOLDER_KEY = 'SET_ME_ACCESS_KEY';
 
 // Only live *.com repos at top level (not affiliate-sites/ mirrors)
-const sites = fs.readdirSync(ROOT).filter(d => {
+const sites = fs.readdirSync(SITE_ROOT).filter(d => {
   try {
     return d.endsWith('.com') &&
-      fs.statSync(path.join(ROOT, d)).isDirectory() &&
-      fs.existsSync(path.join(ROOT, d, '.git')) &&
-      fs.existsSync(path.join(ROOT, d, 'index.html'));
+      fs.statSync(path.join(SITE_ROOT, d)).isDirectory() &&
+      fs.existsSync(path.join(SITE_ROOT, d, '.git')) &&
+      fs.existsSync(path.join(SITE_ROOT, d, 'index.html'));
   } catch { return false; }
 }).sort();
 
@@ -28,7 +29,7 @@ const emailScrubMap = {
 const results = [];
 
 for (const site of sites) {
-  const dir = path.join(ROOT, site);
+  const dir = path.join(SITE_ROOT, site);
   const changes = [];
 
   // Build site-specific contact page
