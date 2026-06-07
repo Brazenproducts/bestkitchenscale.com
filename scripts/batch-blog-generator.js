@@ -310,7 +310,9 @@ const sites = fs.readdirSync(SITES_DIR).filter(d => {
 });
 sites.sort((a,b) => (rotation[a]||'2000-01-01').localeCompare(rotation[b]||'2000-01-01'));
 
-const batch = sites.slice(0, BATCH_SIZE);
+// Skip sites already processed today — don't waste batch budget on them
+const pending = sites.filter(s => rotation[s] !== dateStr);
+const batch = pending.slice(0, BATCH_SIZE);
 let created=0, pushed=0, errors=0;
 
 for (const site of batch) {
@@ -319,15 +321,22 @@ for (const site of batch) {
   const niche = extractNiche(domain);
   const products = extractProducts(siteDir);
   const rng = seededRandom(domain + dateStr);
-  const ti = Math.floor(rng() * TITLES.length);
-  const title = TITLES[ti](niche, year);
-  const slug = SLUGS[ti](niche.toLowerCase().replace(/[^a-z0-9]+/g,'-'));
-  const meta = pick(METAS, rng)(niche.toLowerCase(), year);
-  const filePath = path.join(siteDir, `${slug}.html`);
-
-  if (fs.existsSync(filePath)) {
-    try { const gs = execSync(`cd "${siteDir}" && git status --porcelain "${path.basename(filePath)}" 2>/dev/null`,{encoding:'utf8'}).trim(); if(!gs) continue; } catch(e){continue;}
+  const nicheSlug = niche.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  // Find first slug pattern that doesn't already exist as a committed file
+  const allIndices = Array.from({length: TITLES.length}, (_,i) => i);
+  // Shuffle indices using seeded RNG for variety, but deterministically
+  const shuffledIndices = shuffle(allIndices, seededRandom(domain + dateStr + 'idx'));
+  let ti = -1, slug = '', filePath = '';
+  for (const idx of shuffledIndices) {
+    const candidateSlug = SLUGS[idx](nicheSlug);
+    const candidatePath = path.join(siteDir, `${candidateSlug}.html`);
+    if (!fs.existsSync(candidatePath)) { ti = idx; slug = candidateSlug; filePath = candidatePath; break; }
+    // File exists — skip only if already committed (not dirty)
+    try { const gs = execSync(`cd "${siteDir}" && git status --porcelain "${candidateSlug}.html" 2>/dev/null`,{encoding:'utf8'}).trim(); if(gs) { ti = idx; slug = candidateSlug; filePath = candidatePath; break; } } catch(e) {}
   }
+  if (ti === -1) { rotation[site] = dateStr; continue; } // all 20 slugs exhausted for this site
+  const title = TITLES[ti](niche, year);
+  const meta = pick(METAS, rng)(niche.toLowerCase(), year);
 
   const body = buildArticle(niche, domain, products, rng);
   const html = genHTML(title, slug, body, domain, meta);
