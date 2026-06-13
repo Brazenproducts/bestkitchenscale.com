@@ -287,11 +287,13 @@ else
   echo "🚨 CRITICAL ISSUES — affiliate revenue may be lost" >> "$REPORT"
 fi
 
-# ── ASIN Validation + Auto-Fix ──────────────────────────────────────────────
+# ── ASIN Validation ─────────────────────────────────────────────────────────
+# NOTE: ASIN validation runs as its own separate cron job (Daily Affiliate Link
+# Validator, e40cdb46). Removed from here to prevent timeout — validation across
+# 435 sites takes 22+ minutes and blows the cron timeout budget.
 echo "" >> "$REPORT"
 echo "## ASIN Validation" >> "$REPORT"
-echo "Running ASIN validation across all sites..." >> "$REPORT"
-node "$(dirname "$0")/validate-and-fix-asins.js" 2>&1 | tee -a "$REPORT"
+echo "Skipped here — runs separately via validate-and-fix-asins.js cron job." >> "$REPORT"
 echo "" >> "$REPORT"
 
 echo "" >> "$REPORT"

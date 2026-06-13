@@ -23,8 +23,21 @@ const CREDS = JSON.parse(fs.readFileSync(CREDS_PATH, 'utf8'));
 const SHOPIFY_STORE = 'bartact.myshopify.com';
 const SHOPIFY_TOKEN = process.env.SHOPIFY_TOKEN_BARTACT;
 
-const TARGET_ROAS_MIN = 3.0;
-const TARGET_ROAS_GOAL = 4.0;
+const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN_BARTACT || '8899729921:AAE7SIUmavgRuVV1mSIT1B6ViP_yHWShrx4';
+const TELEGRAM_CHAT_ID = '7550065844';
+
+async function sendTelegram(text) {
+  const body = JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text, parse_mode: 'Markdown' });
+  try {
+    await httpRequest('api.telegram.org', `/bot${TELEGRAM_TOKEN}/sendMessage`, 'POST',
+      { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) }, body);
+  } catch (e) {
+    console.error('Telegram send failed:', e.message);
+  }
+}
+
+const TARGET_ROAS_MIN = 4.0;
+const TARGET_ROAS_GOAL = 5.0;
 const MIN_SPEND_TO_FLAG = 50; // flag zero-conv campaigns spending more than this (all-time)
 const TREND_DAYS = 3; // days of consistent decline before flagging
 
@@ -198,6 +211,11 @@ async function run() {
   const actions = [];
   const flags = [];
 
+  // Load boost state once before campaign loop
+  const boostStateFile = `/home/ubuntu/.openclaw/workspace/memory/ads-boost-state.json`;
+  let boostState = {};
+  try { boostState = JSON.parse(fs.readFileSync(boostStateFile, 'utf8')); } catch(e) {}
+
   // Flag: overall ROAS below minimum
   if (trueRoasTW < TARGET_ROAS_MIN && totalSpendTW > 200) {
     flags.push(`⚠️ TRUE SALES ROAS this week: ${trueRoasTW.toFixed(2)}x — BELOW ${TARGET_ROAS_MIN}x minimum`);
@@ -224,9 +242,11 @@ async function run() {
       flags.push(`⚠️ ${name} (NEW): $${m.spend.toFixed(0)} spent, 0 conversions — monitoring, give it a full week post-Display-fix before cutting`);
     }
 
-    // Strong ROAS — consider boosting
-    if (roas >= TARGET_ROAS_GOAL && m.spend > 50 && budgets[name]) {
-      const newBudget = Math.min(budgets[name].daily * 1.3, budgets[name].daily + 50);
+    // Strong ROAS — consider boosting (max 1 boost per day, cap at $100/day)
+    const MAX_AUTO_BUDGET = 100;
+    const alreadyBoostedToday = boostState[name] === fmtDateISO(today);
+    if (roas >= TARGET_ROAS_GOAL && m.spend > 50 && budgets[name] && budgets[name].daily < MAX_AUTO_BUDGET && !alreadyBoostedToday) {
+      const newBudget = Math.min(budgets[name].daily * 1.3, budgets[name].daily + 20, MAX_AUTO_BUDGET);
       if (newBudget > budgets[name].daily + 5) {
         actions.push({ name, type: 'boost', from: budgets[name].daily, to: Math.round(newBudget), reason: `${roas.toFixed(1)}x ROAS this week` });
       }
@@ -235,18 +255,25 @@ async function run() {
 
   // ── 7. Apply budget actions ──
   const applied = [];
+
   for (const action of actions) {
     if (!budgets[action.name]) continue;
     try {
       const r = await mutateBudget(token, budgets[action.name].resourceName, action.to * 1e6);
       if (r.results) {
         applied.push(action);
+        if (action.type === 'boost') {
+          boostState[action.name] = fmtDateISO(today);
+        }
       }
       await new Promise(r => setTimeout(r, 300));
     } catch (e) {
       flags.push(`❌ Failed to update budget for ${action.name}: ${e.message}`);
     }
   }
+
+  // Save boost state so we don't double-boost same day
+  try { fs.writeFileSync(boostStateFile, JSON.stringify(boostState, null, 2)); } catch(e) {}
 
   // ── 8. Build report ──
   const lines = [];
@@ -303,13 +330,91 @@ async function run() {
   const report = lines.join('\n');
   console.log(report);
 
-  // Save to file for cron pickup
+  // Save to file
   const outPath = `/home/ubuntu/.openclaw/workspace/memory/ads-audit-${fmtDateISO(today)}.md`;
   fs.writeFileSync(outPath, `# Google Ads Audit ${fmtDateISO(today)}\n\n\`\`\`\n${report}\n\`\`\`\n`);
   console.log(`\nSaved to ${outPath}`);
+
+  // Build Telegram summary
+  const roasEmoji = googleRoasTW >= TARGET_ROAS_GOAL ? '✅' : googleRoasTW >= TARGET_ROAS_MIN ? '⚠️' : '🔴';
+  const tgLines = [
+    `${roasEmoji} *Bartact Ads — ${fmtDateISO(today)}*`,
+    `Spend: $${totalSpendTW.toFixed(0)} | ROAS: ${googleRoasTW.toFixed(2)}x (target: ${TARGET_ROAS_MIN}x+)`,
+    `Shopify revenue: $${shopifyRevTW.toFixed(0)} (${shopifyOrdersTW} orders, all channels)`,
+    '',
+  ];
+
+  if (flags.length) {
+    tgLines.push('*Flags:*');
+    flags.forEach(f => tgLines.push(f));
+    tgLines.push('');
+  }
+
+  if (applied.length) {
+    tgLines.push('*Budget changes:*');
+    applied.forEach(a => tgLines.push(`${a.type === 'boost' ? '📈' : '📉'} ${a.name}: $${a.from} → $${a.to}/day`));
+    tgLines.push('');
+  }
+
+  // Top 3 campaigns by spend
+  const topCamps = Object.entries(tw).sort((a,b) => b[1].spend - a[1].spend).slice(0, 3);
+  tgLines.push('*Top campaigns:*');
+  for (const [name, m] of topCamps) {
+    if (m.spend < 1) continue;
+    const roas = m.spend > 0 ? (m.rev / m.spend).toFixed(2) : '0.00';
+    const short = name.length > 28 ? name.slice(0, 25) + '...' : name;
+    tgLines.push(`• ${short}: $${m.spend.toFixed(0)} @ ${roas}x`);
+  }
+
+  // Action prompt — list anything needing a decision
+  const actionItems = [];
+
+  // Campaigns with zero convs and meaningful spend
+  for (const [name, m] of Object.entries(tw)) {
+    if (m.spend >= 30 && m.convs === 0) {
+      actionItems.push(`• ${name} — $${m.spend.toFixed(0)} spent, 0 conversions (pause or cut?)`);
+    }
+  }
+
+  // Campaigns below 2x ROAS with meaningful spend
+  for (const [name, m] of Object.entries(tw)) {
+    if (m.spend >= 50 && m.convs > 0) {
+      const roas = m.rev / m.spend;
+      if (roas < 2.0) {
+        actionItems.push(`• ${name} — $${m.spend.toFixed(0)} spent, ${roas.toFixed(2)}x ROAS (cut budget?)`);
+      }
+    }
+  }
+
+  // Overall ROAS below target
+  if (googleRoasTW < TARGET_ROAS_MIN && totalSpendTW > 200) {
+    tgLines.push('');
+    tgLines.push(`Overall ROAS is ${googleRoasTW.toFixed(2)}x — below the ${TARGET_ROAS_MIN}x minimum.`);
+  }
+
+  if (actionItems.length > 0) {
+    tgLines.push('');
+    tgLines.push('*What do you want to do with these?*');
+    actionItems.forEach(a => tgLines.push(a));
+  } else {
+    tgLines.push('');
+    tgLines.push('Everything looks clean today. No action needed from you.');
+  }
+
+  await sendTelegram(tgLines.join('\n'));
+  console.log('Telegram report sent.');
 }
 
-run().catch(e => {
+run().catch(async e => {
   console.error('Audit failed:', e.message);
+  try {
+    const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN_BARTACT || '8899729921:AAE7SIUmavgRuVV1mSIT1B6ViP_yHWShrx4';
+    const body = JSON.stringify({ chat_id: '7550065844', text: `🚨 *Bartact Ads audit FAILED*\n${new Date().toISOString().slice(0,10)}\nError: ${e.message}`, parse_mode: 'Markdown' });
+    const https2 = require('https');
+    await new Promise((res, rej) => {
+      const req = https2.request({ hostname: 'api.telegram.org', path: `/bot${TELEGRAM_TOKEN}/sendMessage`, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) } }, r => { r.resume(); r.on('end', res); });
+      req.on('error', rej); req.write(body); req.end();
+    });
+  } catch (_) {}
   process.exit(1);
 });
