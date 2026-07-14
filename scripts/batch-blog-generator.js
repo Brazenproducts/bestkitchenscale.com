@@ -301,10 +301,32 @@ function updateSitemap(siteDir, domain, slug) {
   }
 }
 
+// ⛔ ABSOLUTE BLOCKLIST — never generate affiliate content for these sites, EVER.
+// bartact.com + bullstrap.com are live Shopify stores. Touching them = destroying real businesses.
+// faithfulpassages = church site, fernallern/thornwoodaccord = Fern Allern author brand,
+// skipatip = live Next.js app. None of these should ever get affiliate blog posts.
+const DO_NOT_BUILD = new Set([
+  'bartact.com', 'bullstrap.com',
+  'hspseats.com', 'huntersafetyproducts.com', 'hspoffroad.com',
+  'faithfulpassages.com',
+  'fernallern.com', 'thornwoodaccord.com',
+  'skipatip.com',
+  'blockchainabcs.com', 'bowtiefilters.com', 'bloxfilters.com',
+  'pincersports.com', 'gridguardsusa.com', 'gridguardusa.com',
+  'ballkinis.com', 'brazenauto.com', 'holidayheinies.com', 'switchbladewipers.com',
+]);
+
 // === MAIN ===
 const sites = fs.readdirSync(SITES_DIR).filter(d => {
   const dir = path.join(SITES_DIR, d);
   if (!fs.statSync(dir).isDirectory()) return false;
+  // Check CNAME for canonical domain name
+  let domain = d;
+  try { domain = fs.readFileSync(path.join(dir, 'CNAME'), 'utf8').trim(); } catch(e) {}
+  if (DO_NOT_BUILD.has(domain) || DO_NOT_BUILD.has(d)) {
+    console.log(`🚨 BLOCKED: ${domain} is on DO_NOT_BUILD list — skipping`);
+    return false;
+  }
   try { return fs.readdirSync(dir).filter(f=>f.endsWith('.html')).some(f=>fs.readFileSync(path.join(dir,f),'utf8').includes('amazon.com')); }
   catch(e) { return false; }
 });

@@ -19,8 +19,21 @@ TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
 
 # Valid Amazon Associates tracking IDs
 VALID_TAGS=(
-  # Base tag
+  # Base tags (01 original; 02-13 created 2026-07-04 tracking-ID redistribution,
+  # confirmed live per memory/tracking-id-redistribution-report.json)
   "brazenprodu01-20"
+  "brazenprodu02-20"
+  "brazenprodu03-20"
+  "brazenprodu04-20"
+  "brazenprodu05-20"
+  "brazenprodu06-20"
+  "brazenprodu07-20"
+  "brazenprodu08-20"
+  "brazenprodu09-20"
+  "brazenprodu10-20"
+  "brazenprodu11-20"
+  "brazenprodu12-20"
+  "brazenprodu13-20"
   # Product-specific tags (older assignments)
   "brazenprodu01-20-recipsaw-20"
   "brazenprodu01-20-pastamaker-20"
@@ -149,28 +162,32 @@ HTTPS_OK=0
 HTTPS_BAD=0
 HTTPS_BAD_LIST=""
 
-for site_dir in "$SITES_DIR"/*/; do
-  [ -d "$site_dir" ] || continue
-  site=$(basename "$site_dir")
-  has_amazon=$(grep -rl "amazon.com" "$site_dir"/*.html 2>/dev/null | head -1)
-  [ -z "$has_amazon" ] && continue
+if [ "${LOCAL_ONLY:-}" = "1" ]; then
+  echo "  (Skipped — LOCAL_ONLY mode)" >> "$REPORT"
+else
+  for site_dir in "$SITES_DIR"/*/; do
+    [ -d "$site_dir" ] || continue
+    site=$(basename "$site_dir")
+    has_amazon=$(grep -rl "amazon.com" "$site_dir"/*.html 2>/dev/null | head -1)
+    [ -z "$has_amazon" ] && continue
+    
+    cert_cn=$(echo | openssl s_client -servername "$site" -connect "$site:443" 2>/dev/null | openssl x509 -noout -subject 2>/dev/null | grep -oP "CN = \K.*" || true)
+    
+    if echo "$cert_cn" | grep -q "$site"; then
+      HTTPS_OK=$((HTTPS_OK + 1))
+    else
+      HTTPS_BAD=$((HTTPS_BAD + 1))
+      HTTPS_BAD_LIST="${HTTPS_BAD_LIST}$site (cert: ${cert_cn:-NONE})\n"
+    fi
+  done
   
-  cert_cn=$(echo | openssl s_client -servername "$site" -connect "$site:443" 2>/dev/null | openssl x509 -noout -subject 2>/dev/null | grep -oP "CN = \K.*" || true)
-  
-  if echo "$cert_cn" | grep -q "$site"; then
-    HTTPS_OK=$((HTTPS_OK + 1))
-  else
-    HTTPS_BAD=$((HTTPS_BAD + 1))
-    HTTPS_BAD_LIST="${HTTPS_BAD_LIST}$site (cert: ${cert_cn:-NONE})\n"
+  echo "  HTTPS valid: $HTTPS_OK" >> "$REPORT"
+  echo "  HTTPS broken/missing: $HTTPS_BAD" >> "$REPORT"
+  if [ "$HTTPS_BAD" -gt 0 ]; then
+    echo "" >> "$REPORT"
+    echo "  Sites needing HTTPS fix:" >> "$REPORT"
+    echo -e "  $HTTPS_BAD_LIST" >> "$REPORT"
   fi
-done
-
-echo "  HTTPS valid: $HTTPS_OK" >> "$REPORT"
-echo "  HTTPS broken/missing: $HTTPS_BAD" >> "$REPORT"
-if [ "$HTTPS_BAD" -gt 0 ]; then
-  echo "" >> "$REPORT"
-  echo "  Sites needing HTTPS fix:" >> "$REPORT"
-  echo -e "  $HTTPS_BAD_LIST" >> "$REPORT"
 fi
 echo "" >> "$REPORT"
 
@@ -232,16 +249,20 @@ echo "" >> "$REPORT"
 
 # Live site spot check (sample 20 random sites)
 echo "── Live Site Spot Check (20 random) ──" >> "$REPORT"
-SAMPLE_SITES=$(find "$SITES_DIR" -maxdepth 2 -name "index.html" -exec grep -l "amazon.com" {} \; 2>/dev/null | xargs -I{} dirname {} | xargs -I{} basename {} | shuf | head -20)
-for site in $SAMPLE_SITES; do
-  status=$(curl -so /dev/null -w "%{http_code}" --max-time 8 "https://$site/" 2>/dev/null || echo "000")
-  if [ "$status" != "200" ] && [ "$status" != "301" ] && [ "$status" != "302" ]; then
-    DOWN_SITES=$((DOWN_SITES + 1))
-    DOWN_LIST="${DOWN_LIST}$site (HTTP $status)\n"
-    echo "  ❌ DOWN: $site → HTTP $status" >> "$REPORT"
-  fi
-done
-[ "$DOWN_SITES" -eq 0 ] && echo "  ✅ All 20 sampled sites responding" >> "$REPORT"
+if [ "${LOCAL_ONLY:-}" = "1" ]; then
+  echo "  (Skipped — LOCAL_ONLY mode)" >> "$REPORT"
+else
+  SAMPLE_SITES=$(find "$SITES_DIR" -maxdepth 2 -name "index.html" -exec grep -l "amazon.com" {} \; 2>/dev/null | xargs -I{} dirname {} | xargs -I{} basename {} | shuf | head -20)
+  for site in $SAMPLE_SITES; do
+    status=$(curl -so /dev/null -w "%{http_code}" --max-time 8 "https://$site/" 2>/dev/null || echo "000")
+    if [ "$status" != "200" ] && [ "$status" != "301" ] && [ "$status" != "302" ]; then
+      DOWN_SITES=$((DOWN_SITES + 1))
+      DOWN_LIST="${DOWN_LIST}$site (HTTP $status)\n"
+      echo "  ❌ DOWN: $site → HTTP $status" >> "$REPORT"
+    fi
+  done
+  [ "$DOWN_SITES" -eq 0 ] && echo "  ✅ All 20 sampled sites responding" >> "$REPORT"
+fi
 echo "" >> "$REPORT"
 
 # Summary
