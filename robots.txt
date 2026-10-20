@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /privacy.html
+Sitemap: https://bestkitchenscale.com/sitemap.xml

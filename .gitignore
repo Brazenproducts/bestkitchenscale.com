@@ -1,0 +1,13 @@
+.env
+
+# SECURITY — never commit these
+.env
+.env.*
+brain-dumps/
+*brain-dump*
+*credentials*
+*.key
+*.pem
+shpat_*
+shpss_*
+ghp_*
